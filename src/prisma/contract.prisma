@@ -1,0 +1,59 @@
+// use prisma-8
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum BorrowStatus {
+  BORROWED
+  RETURNED
+}
+
+model User {
+  id            String         @id @onCreate(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(USER)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  borrowRecords BorrowRecord[]
+}
+
+model Category {
+  id          String   @id @onCreate(uuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+
+  books Book[]
+}
+
+model Book {
+  id              String         @id @onCreate(uuid())
+  title           String
+  author          String
+  isbn            String         @unique
+  description     String?
+  totalCopies     Int
+  availableCopies Int
+  categoryId      String
+  createdAt       DateTime       @default(now())
+  category        Category       @relation(fields: [categoryId], references: [id])
+  borrowRecords   BorrowRecord[]
+}
+
+model BorrowRecord {
+  id         String       @id @onCreate(uuid())
+  userId     String
+  bookId     String
+  borrowedAt DateTime     @default(now())
+  dueDate    DateTime
+  returnedAt DateTime?
+  status     BorrowStatus @default(BORROWED)
+  createdAt  DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+}
