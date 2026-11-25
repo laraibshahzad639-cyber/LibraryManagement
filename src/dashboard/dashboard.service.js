@@ -58,3 +58,10 @@ export const getReturnedBooks = async () => {
   }));
   return returnedBooks;
 };
+
+export const getOverDueBooks = async () => {
+  const overDue = await db.orm.public.BorrowRecord.where({}).aggregate((u) => ({
+    count: u.count(),
+  }));
+  return returnedBooks;
+};
