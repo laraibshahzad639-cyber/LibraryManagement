@@ -19,6 +19,8 @@ import { error } from 'node:console';
 export const addBorrowBooksController = async (req, res, next) => {
   try {
     const { bookId } = req.params;
+
+    const role = req.user.role;
     const userId = req.user.userId;
     const existingUser = await getUsersById(userId);
     if (!existingUser) {
@@ -35,6 +37,14 @@ export const addBorrowBooksController = async (req, res, next) => {
     if (checkBorrowRecord.length >= 3) {
       return errorMessage(res, 400, ' You can borrow maximum 3 books');
     }
+    if (getBooks.isRestricted === true) {
+      return errorMessage(
+        res,
+        403,
+        " This book cann't be borrowed.! Restercited by Admin"
+      );
+    }
+
     const bookAlreadyborrow = checkBorrowRecord.some(
       (Book) => Book.bookId == bookId
     );

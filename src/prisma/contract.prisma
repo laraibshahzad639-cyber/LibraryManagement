@@ -39,6 +39,7 @@ model Book {
   totalCopies     Int
   availableCopies Int
   categoryId      String
+  isRestricted    Boolean        @default(false)
   createdAt       DateTime       @default(now())
   category        Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   borrowRecords   BorrowRecord[]

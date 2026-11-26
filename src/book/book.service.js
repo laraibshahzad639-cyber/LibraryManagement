@@ -32,12 +32,10 @@ export const getAllBooks = async ({
     query = query.where((u) => u.author.ilike(`%${author}%`));
   }
 
-  // 1. Count query (uses filtered query BEFORE orderBy, limit, and offset)
   const countQuery = query.aggregate((a) => ({
     total: a.count(),
   }));
 
-  // 2. Data query (adds orderBy, limit, offset, and executes with .all())
   const dataQuery = query
     .orderBy((b) => {
       const field = sortBy === 'title' ? b.title : b.createdAt;

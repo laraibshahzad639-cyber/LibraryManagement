@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'b8b3995d325ed1a1fe4ff5f74ab9e9af1b99c1e2017445e48a2f620f7ec66164'>;
+  StorageHashBase<'845a7eba0b0e32c9ddc6179dfe70efcebdc28578931ee1ed7dec0db2e9135c6b'>;
 export type ExecutionHash =
   ExecutionHashBase<'3b1f244c414c9d87ca8ac2b266cf6bc58c481e6e835397a65ad5e8c3c7e77b4c'>;
 export type ProfileHash =
@@ -651,6 +651,7 @@ export namespace Models {
     createdAt: FieldOutputTypes['public']['Book']['createdAt'];
     description: FieldOutputTypes['public']['Book']['description'];
     id: FieldOutputTypes['public']['Book']['id'];
+    isRestricted: FieldOutputTypes['public']['Book']['isRestricted'];
     isbn: FieldOutputTypes['public']['Book']['isbn'];
     title: FieldOutputTypes['public']['Book']['title'];
     totalCopies: FieldOutputTypes['public']['Book']['totalCopies'];
@@ -760,6 +761,16 @@ type ContractBase = Omit<
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly isRestricted: {
+                  readonly dataType: 'pg/bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
                   readonly many: false;
                 };
                 readonly isbn: {
@@ -1106,6 +1117,13 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                 };
               };
+              readonly isRestricted: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/bool@1';
+                };
+              };
               readonly isbn: {
                 readonly nullable: false;
                 readonly type: {
@@ -1165,6 +1183,7 @@ type ContractBase = Omit<
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly description: { readonly column: 'description' };
                 readonly id: { readonly column: 'id' };
+                readonly isRestricted: { readonly column: 'isRestricted' };
                 readonly isbn: { readonly column: 'isbn' };
                 readonly title: { readonly column: 'title' };
                 readonly totalCopies: { readonly column: 'totalCopies' };
