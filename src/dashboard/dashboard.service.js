@@ -24,34 +24,44 @@ export const getTotalUsers = async () => {
   return totalUsers;
 };
 export const getActiveBorrow = async () => {
-  const totalActiveBorrow = await db.orm.public.BorrowRecord.aggregate((b) => ({
+  const totalActiveBorrow = await db.orm.public.BorrowRecord.where({
+    status: 'BORROWED',
+  }).aggregate((b) => ({
     count: b.count(),
   }));
   return totalActiveBorrow;
 };
 
-export const getOverdueRecords = async () => {
-  const totalOverdue = await db.orm.public.BorrowRecord.aggregate((a) => ({
-    count: a.count(),
-  }));
-  return totalOverdue;
+export const getOverdueRecords = async (now = new Date()) => {
+  const totaloverdue = await db.orm.public.BorrowRecord.where({
+    status: 'BORROWED',
+  })
+    .where((r) => r.dueDate.lt(now))
+    .aggregate((u) => ({
+      count: u.count(),
+    }));
+  console.log(totaloverdue);
+  return totaloverdue;
 };
+
 export const getAvailableCopies = async () => {
   const totalAvaileableCopies = await db.orm.public.Book.aggregate((b) => ({
-    count: b.count(),
+    count: b.sum('availableCopies'),
   }));
   return totalAvaileableCopies;
 };
-export const curentBorrowBook = async () => {
+export const curentBorrowBook = async (userId) => {
   const curentBorrowBook = await db.orm.public.BorrowRecord.where({
+    userId,
     status: 'BORROWED',
   }).aggregate((u) => ({
     count: u.count(),
   }));
   return curentBorrowBook;
 };
-export const getReturnedBooks = async () => {
+export const getReturnedBooks = async (userId) => {
   const returnedBooks = await db.orm.public.BorrowRecord.where({
+    userId,
     status: 'RETURNED',
   }).aggregate((u) => ({
     count: u.count(),
@@ -59,9 +69,11 @@ export const getReturnedBooks = async () => {
   return returnedBooks;
 };
 
-export const getOverDueBooks = async () => {
-  const overDue = await db.orm.public.BorrowRecord.where({}).aggregate((u) => ({
-    count: u.count(),
-  }));
-  return returnedBooks;
+export const getOverDueBooks = async (userId, now = new Date()) => {
+  const overDue = await db.orm.public.BorrowRecord.where({ userId })
+    .where((r) => r.dueDate.lt(now))
+    .aggregate((u) => ({
+      count: u.count(),
+    }));
+  return overDue;
 };

@@ -39,8 +39,8 @@ export const getAllUsers = async ({
 export const getUsersById = async (id) => {
   return await db.orm.public.User.where({ id }).first();
 };
-export const deleteUsers = async (id) => {
-  return await db.orm.public.User.where({ id }).delete();
+export const deleteUsers = async (id, role) => {
+  return await db.orm.public.User.where({ id, role }).delete();
 };
 export const UsersStatus = async (id, isActive) => {
   return await db.orm.public.User.where({ id }).update({ isActive });

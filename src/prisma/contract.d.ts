@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'cb285a234c0f96ca6ac8fcd3fb46d264c58b875e7cbe178fc21c0dc24f6f99ea'>;
+  StorageHashBase<'b8b3995d325ed1a1fe4ff5f74ab9e9af1b99c1e2017445e48a2f620f7ec66164'>;
 export type ExecutionHash =
   ExecutionHashBase<'3b1f244c414c9d87ca8ac2b266cf6bc58c481e6e835397a65ad5e8c3c7e77b4c'>;
 export type ProfileHash =
@@ -886,27 +886,9 @@ type ContractBase = Omit<
                   readonly unique: false;
                 },
                 {
-                  readonly name: 'BorrowRecord_bookId_status_idx_0d7a5acd';
-                  readonly prefix: 'BorrowRecord_bookId_status_idx';
-                  readonly columns: readonly ['bookId', 'status'];
-                  readonly unique: false;
-                },
-                {
-                  readonly name: 'BorrowRecord_dueDate_status_idx_0be3fea6';
-                  readonly prefix: 'BorrowRecord_dueDate_status_idx';
-                  readonly columns: readonly ['dueDate', 'status'];
-                  readonly unique: false;
-                },
-                {
                   readonly name: 'BorrowRecord_userId_idx_a489d58a';
                   readonly prefix: 'BorrowRecord_userId_idx';
                   readonly columns: readonly ['userId'];
-                  readonly unique: false;
-                },
-                {
-                  readonly name: 'BorrowRecord_userId_status_idx_e4a128ba';
-                  readonly prefix: 'BorrowRecord_userId_status_idx';
-                  readonly columns: readonly ['userId', 'status'];
                   readonly unique: false;
                 },
               ];

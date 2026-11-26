@@ -25,6 +25,7 @@ export const getUsersController = async (req, res, next) => {
       id,
       name,
       email,
+      userId,
       userRole,
       filterRole,
       page1,
@@ -40,19 +41,22 @@ export const getUsersController = async (req, res, next) => {
 export const getUsersByIdController = async (req, res, next) => {
   try {
     const { id } = req.params;
+
     const users = await getUsersById(id);
     if (!users) {
       return errorMessage(res, 404, 'Users  not foundf');
     }
     return sucessMessage(res, 200, 'Users fetched sucessfully', users);
   } catch (error) {
+    console.log('check eerror', error);
     next(error);
   }
 };
 export const deleteUsersController = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const users = await getUsersById(id);
+    const role = req.user.role;
+    const users = await getUsersById(id, role);
     if (!users) {
       return errorMessage(res, 404, 'Users not found ');
     }

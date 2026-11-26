@@ -9,9 +9,9 @@ import { authenticationMiddleware } from '../middleware/auth.middleware.js';
 import { isAdmin } from '../middleware/role.middleware.js';
 
 const router = express.Router();
-router.get('/', authenticationMiddleware, getUsersController);
-router.get('/:id', getUsersByIdController);
-router.delete('/:id', deleteUsersController);
+router.get('/', authenticationMiddleware, isAdmin, getUsersController);
+router.get('/:id', authenticationMiddleware, isAdmin, getUsersByIdController);
+router.delete('/:id', authenticationMiddleware, isAdmin, deleteUsersController);
 router.patch(
   '/:id/status',
   authenticationMiddleware,
