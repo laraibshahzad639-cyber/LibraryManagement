@@ -52,15 +52,14 @@ export const getAllBooksController = async (req, res, next) => {
     const { page, limit, categoryId, available, sortBy, title, author } =
       req.query;
 
-    const page1 = Number(page) || 1;
-    const limit1 = Number(limit) || 10;
-    const categoryId1 = categoryId;
+    const page1 = Math.max(1, Number(page) || 1);
+    const limit1 = Math.max(1, Number(limit) || 10);
     const sort = req.query.sort === 'desc' ? 'desc' : 'asc';
 
-    const allBooks = await getAllBooks({
+    const { books, meta } = await getAllBooks({
       page1,
       limit1,
-      categoryId1,
+      categoryId,
       available,
       sortBy,
 
@@ -69,11 +68,14 @@ export const getAllBooksController = async (req, res, next) => {
       sort,
     });
 
-    if (!allBooks || allBooks.length === 0) {
+    if (!books || books.length === 0) {
       return errorMessage(res, 404, 'Books not found');
     }
 
-    return sucessMessage(res, 200, 'Books Fetched successfully', allBooks);
+    return sucessMessage(res, 200, 'Books Fetched successfully', {
+      books,
+      meta,
+    });
   } catch (error) {
     console.log('check error', error);
     next(error);

@@ -21,7 +21,7 @@ export const getUsersController = async (req, res, next) => {
       return errorMessage(res, 404, 'Users not found');
     }
 
-    const getUsers = await getAllUsers({
+    const { getUsers, meta } = await getAllUsers({
       id,
       name,
       email,
@@ -32,7 +32,10 @@ export const getUsersController = async (req, res, next) => {
       limit1,
     });
 
-    return sucessMessage(res, 200, 'Users fetched sucess fully', getUsers);
+    return sucessMessage(res, 200, 'Users fetched sucess fully', {
+      getUsers,
+      meta,
+    });
   } catch (error) {
     console.log('check error', error);
     next(error);

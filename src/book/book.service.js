@@ -1,5 +1,6 @@
 import { title } from 'node:process';
 import { db } from '../prisma/db.ts';
+import { buildPaginationMeta } from '../utils/pagination.js';
 export const addBooks = async (data) => {
   return await db.orm.public.Book.create(data);
 };
@@ -31,12 +32,25 @@ export const getAllBooks = async ({
     query = query.where((u) => u.author.ilike(`%${author}%`));
   }
 
-  query = query.orderBy((b) => {
-    const field = sortBy === 'title' ? b.title : b.createdAt;
-    return sort === 'desc' ? field.desc() : field.asc();
-  });
+  // 1. Count query (uses filtered query BEFORE orderBy, limit, and offset)
+  const countQuery = query.aggregate((a) => ({
+    total: a.count(),
+  }));
 
-  return await query.limit(limit1).offset(offset).all();
+  // 2. Data query (adds orderBy, limit, offset, and executes with .all())
+  const dataQuery = query
+    .orderBy((b) => {
+      const field = sortBy === 'title' ? b.title : b.createdAt;
+      return sort === 'desc' ? field.desc() : field.asc();
+    })
+    .limit(limit1)
+    .offset(offset)
+    .all();
+
+  const [books, countResult] = await Promise.all([dataQuery, countQuery]);
+  const meta = buildPaginationMeta(Number(countResult.total), page1, limit1);
+
+  return { books, meta };
 };
 
 export const getBooksById = async (id) => {

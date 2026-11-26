@@ -1,5 +1,5 @@
 import { db } from '../prisma/db.ts';
-
+import { buildPaginationMeta } from '../utils/pagination.js';
 export const getAllUsers = async ({
   id,
   name,
@@ -32,8 +32,14 @@ export const getAllUsers = async ({
   if (email) {
     query = query.where((u) => u.email.ilike(`%${email}%`));
   }
+  const countQuery = query.aggregate((a) => ({
+    total: a.count(),
+  }));
+  const dataQuery = query.limit(limit1).offset(offset).all();
+  const [getUsers, countResult] = await Promise.all([dataQuery, countQuery]);
+  const meta = buildPaginationMeta(Number(countResult.total), page1, limit1);
 
-  return await query.limit(limit1).offset(offset).all();
+  return { getUsers, meta };
 };
 
 export const getUsersById = async (id) => {
